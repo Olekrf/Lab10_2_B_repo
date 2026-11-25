@@ -23,7 +23,7 @@ struct Student
         int pedagogy;
     };
 };
-
+void Sort(Student* p, const int N);
 void   Create(Student* p, const int N);
 void   Print(Student* p, const int N);
 int    ThirdGrade(const Student& s);
@@ -33,7 +33,12 @@ int    BinSearch(Student* p, const int N, const string prizv, const int thirdGra
 int main()
 {
     int N;
-    cout << "Введіть кількість студентів N: "; cin >> N;
+    do {
+        cout << "Введіть кількість студентів N: ";
+        cin >> N;
+        if (N <= 0)
+            cout << "Помилка! Кількість студентів має бути більшою за 0." << endl;
+    } while (N <= 0);
 
     Student* p = new Student[N];
 
@@ -48,37 +53,43 @@ int main()
         cout << "Виберіть дію:" << endl << endl;
         cout << " [1] - введення даних з клавіатури" << endl;
         cout << " [2] - вивід даних на екран" << endl;
-        cout << " [3] - бінарний пошук студента" << endl << endl;
+        cout << " [3] - фізичне впорядкування даних" << endl;
+        cout << " [4] - бінарний пошук студента" << endl << endl;
         cout << " [0] - вихід та завершення роботи програми" << endl << endl;
         cout << "Введіть значення: "; cin >> menuItem;
         cout << endl << endl;
 
         switch (menuItem)
         {
-        case 1:
-            Create(p, N);
-            break;
-        case 2:
-            Print(p, N);
-            break;
-        case 3:
-            cout << "Введіть ключі пошуку:" << endl;
-            cout << " оцінка з третього предмету: "; cin >> thirdGrade;
-            cout << " середній бал: ";               cin >> avg;
-            cout << " прізвище: ";                   cin >> prizv;
-            cout << endl;
+            case 1:
+                Create(p, N);
+                break;
+            case 2:
+                Print(p, N);
+                break;
+            case 3:
+                Sort(p, N);
+                cout << "Масив впорядковано." << endl;
+                break;
+            case 4:
+                Sort(p, N);
+                cout << "Введіть ключі пошуку:" << endl;
+                cout << " оцінка з третього предмету: "; cin >> thirdGrade;
+                cout << " середній бал: ";               cin >> avg;
+                cout << " прізвище: ";                   cin >> prizv;
+                cout << endl;
 
-            found = BinSearch(p, N, prizv, thirdGrade, avg);
-            if (found != -1)
-                cout << "Знайдено студента під номером: " << found + 1 << endl;
-            else
-                cout << "Шуканого студента не знайдено" << endl;
-            break;
-        case 0:
-            break;
-        default:
-            cout << "Ви ввели помилкове значення! "
-                 << "Слід ввести число - номер вибраного пункту меню" << endl;
+                found = BinSearch(p, N, prizv, thirdGrade, avg);
+                if (found != -1)
+                    cout << "Знайдено студента під номером: " << found + 1 << endl;
+                else
+                    cout << "Шуканого студента не знайдено" << endl;
+                break;
+            case 0:
+                break;
+            default:
+                cout << "Ви ввели помилкове значення! "
+                     << "Слід ввести число - номер вибраного пункту меню" << endl;
         }
     } while (menuItem != 0);
 
@@ -180,7 +191,25 @@ double StudentAverage(const Student& s)
 {
     return (s.physics + s.math + ThirdGrade(s)) / 3.0;
 }
-
+void Sort(Student* p, const int N)
+{
+    Student tmp;
+    for (int i0 = 0; i0 < N - 1; i0++)
+        for (int i1 = 0; i1 < N - i0 - 1; i1++)
+            if ((ThirdGrade(p[i1]) > ThirdGrade(p[i1 + 1]))
+                ||
+                (ThirdGrade(p[i1]) == ThirdGrade(p[i1 + 1]) &&
+                 StudentAverage(p[i1]) > StudentAverage(p[i1 + 1]))
+                ||
+                (ThirdGrade(p[i1]) == ThirdGrade(p[i1 + 1]) &&
+                 StudentAverage(p[i1]) == StudentAverage(p[i1 + 1]) &&
+                 p[i1].prizv > p[i1 + 1].prizv))
+            {
+                tmp = p[i1];
+                p[i1] = p[i1 + 1];
+                p[i1 + 1] = tmp;
+            }
+}
 int BinSearch(Student* p, const int N, const string prizv, const int thirdGrade, const double avg)
 { // повертає індекс знайденого елемента або -1, якщо шуканий елемент відсутній
     int L = 0, R = N - 1, m;
