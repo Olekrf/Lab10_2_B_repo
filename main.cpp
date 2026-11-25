@@ -6,7 +6,6 @@ using namespace std;
 
 enum Specialty { CS, INFORMATICS, MATH_ECON, PHYS_INFORM, LABOR };
 
-
 string specialtyStr[] = { "Комп. науки", "Інформатика", "Матем. та екон.",
                           "Фіз. та інформ.", "Труд. навчання" };
 
@@ -25,12 +24,11 @@ struct Student
     };
 };
 
-void Create(Student* p, const int N);
-void Print(Student* p, const int N);
-int ThirdGrade(const Student& s);
+void   Create(Student* p, const int N);
+void   Print(Student* p, const int N);
+int    ThirdGrade(const Student& s);
 double StudentAverage(const Student& s);
-int BinSearch(Student* p, const int N, const string prizv, const int thirdGrade, const double avg);
-
+int    BinSearch(Student* p, const int N, const string prizv, const int thirdGrade, const double avg);
 
 int main()
 {
@@ -39,23 +37,50 @@ int main()
 
     Student* p = new Student[N];
 
-    Create(p, N);
-    Print(p, N);
     string prizv;
     double avg;
-    int thirdGrade;
-    cout << "Введіть ключі пошуку:" << endl;
-    cout << " оцінка з третього предмету: "; cin >> thirdGrade;
-    cout << " середній бал: ";               cin >> avg;
-    cout << " прізвище: ";                   cin >> prizv;
-    cout << endl;
-    int found = BinSearch(p, N, prizv, thirdGrade, avg);
+    int    thirdGrade;
+    int    found;
+    int    menuItem;
 
-    if (found != -1)
-        cout << "Знайдено студента під номером:" << found+1 << endl;
-    else
-        cout << "Шуканого студента не знайдено" << endl;
+    do {
+        cout << endl << endl;
+        cout << "Виберіть дію:" << endl << endl;
+        cout << " [1] - введення даних з клавіатури" << endl;
+        cout << " [2] - вивід даних на екран" << endl;
+        cout << " [3] - бінарний пошук студента" << endl << endl;
+        cout << " [0] - вихід та завершення роботи програми" << endl << endl;
+        cout << "Введіть значення: "; cin >> menuItem;
+        cout << endl << endl;
 
+        switch (menuItem)
+        {
+        case 1:
+            Create(p, N);
+            break;
+        case 2:
+            Print(p, N);
+            break;
+        case 3:
+            cout << "Введіть ключі пошуку:" << endl;
+            cout << " оцінка з третього предмету: "; cin >> thirdGrade;
+            cout << " середній бал: ";               cin >> avg;
+            cout << " прізвище: ";                   cin >> prizv;
+            cout << endl;
+
+            found = BinSearch(p, N, prizv, thirdGrade, avg);
+            if (found != -1)
+                cout << "Знайдено студента під номером: " << found + 1 << endl;
+            else
+                cout << "Шуканого студента не знайдено" << endl;
+            break;
+        case 0:
+            break;
+        default:
+            cout << "Ви ввели помилкове значення! "
+                 << "Слід ввести число - номер вибраного пункту меню" << endl;
+        }
+    } while (menuItem != 0);
 
     delete[] p;
 
@@ -137,16 +162,17 @@ void Print(Student* p, const int N)
          << endl;
     cout << endl;
 }
+
 int ThirdGrade(const Student& s)
 {
     switch (s.spec)
     {
-        case CS:
-            return s.programming;
-        case INFORMATICS:
-            return s.numerical_methods;
-        default:
-            return s.pedagogy;
+    case CS:
+        return s.programming;
+    case INFORMATICS:
+        return s.numerical_methods;
+    default:
+        return s.pedagogy;
     }
 }
 
